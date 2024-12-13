@@ -1,3 +1,4 @@
+#Dokerfile
 # Use a lightweight Python base image
 FROM python:3.11-slim
 
@@ -18,3 +19,4 @@ EXPOSE 5000
 
 # Command to run the application
 CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000"]
+
