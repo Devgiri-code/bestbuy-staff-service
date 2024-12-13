@@ -1,104 +1,162 @@
 # BestBuy Staff-Service Microservice
 
 ## Overview
-The **Staff-Service Microservice** is a RESTful API designed to manage staff information for BestBuy's internal systems. It provides CRUD (Create, Read, Update, Delete) operations for managing staff data. The microservice adheres to the 12-Factor App principles and is deployed using Docker and Kubernetes on Azure Kubernetes Service (AKS).
+The **BestBuy Staff-Service Microservice** is a lightweight RESTful application designed to manage staff information for Best Buy's internal system. It provides CRUD (Create, Read, Update, Delete) operations to handle staff details such as:
 
-## Features
-- **Create Staff:** Add new staff members.
-- **Retrieve Staff:** Fetch details of all staff or a specific staff member.
-- **Update Staff:** Modify existing staff member information.
-- **Delete Staff:** Remove staff members from the system.
+- **ID**: Unique identifier for each staff member.
+- **Name**: Full name of the staff member.
+- **Position**: Role of the staff member.
+- **Department**: Department where the staff member works.
+- **Email**: Contact email address.
+- **Phone**: Contact phone number.
 
-## Endpoints
-| HTTP Method | Endpoint               | Description                 |
-|-------------|------------------------|-----------------------------|
-| POST        | `/staff`              | Create a new staff member   |
-| GET         | `/staff`              | Retrieve all staff members  |
-| GET         | `/staff/<staff_id>`   | Retrieve a specific staff   |
-| PUT         | `/staff/<staff_id>`   | Update a specific staff     |
-| DELETE      | `/staff/<staff_id>`   | Delete a specific staff     |
+The microservice adheres to 12-factor app principles and is designed for cloud-native deployment.
 
-## Prerequisites
-- Python 3.11
-- Docker
-- Kubernetes CLI (kubectl)
-- Azure CLI
-- Docker Hub account
+---
 
-## Local Setup
+## How to Use the Microservice
+
+### Endpoints
+
+#### 1. Create Staff
+**POST** `/staff`
+- **Description**: Add a new staff member.
+- **Request Body** (JSON):
+  ```json
+  {
+    "name": "John Doe",
+    "position": "Manager",
+    "department": "Sales",
+    "email": "john.doe@bestbuy.com",
+    "phone": "123-456-7890"
+  }
+  ```
+- **Response**: Newly created staff member.
+
+#### 2. Get All Staff
+**GET** `/staff`
+- **Description**: Retrieve a list of all staff members.
+- **Response** (JSON):
+  ```json
+  [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "position": "Manager",
+      "department": "Sales",
+      "email": "john.doe@bestbuy.com",
+      "phone": "123-456-7890"
+    }
+  ]
+  ```
+
+#### 3. Get Staff by ID
+**GET** `/staff/:id`
+- **Description**: Retrieve details of a specific staff member by ID.
+- **Response** (JSON):
+  ```json
+  {
+    "id": "1",
+    "name": "John Doe",
+    "position": "Manager",
+    "department": "Sales",
+    "email": "john.doe@bestbuy.com",
+    "phone": "123-456-7890"
+  }
+  ```
+
+#### 4. Update Staff
+**PUT** `/staff/:id`
+- **Description**: Update details of a specific staff member.
+- **Request Body** (JSON):
+  ```json
+  {
+    "name": "Jane Smith",
+    "position": "Assistant Manager",
+    "department": "HR",
+    "email": "jane.smith@bestbuy.com",
+    "phone": "987-654-3210"
+  }
+  ```
+- **Response**: Updated staff member details.
+
+#### 5. Delete Staff
+**DELETE** `/staff/:id`
+- **Description**: Remove a staff member from the system.
+- **Response**: Confirmation message.
+
+---
+
+## Tasks Completed
+
+1. **Microservice Development**:
+   - Created a RESTful service with endpoints for CRUD operations.
+   - Used an in-memory data structure for storing staff details.
+   - Followed 12-factor app principles, including the use of environment variables.
+
+2. **Containerization**:
+   - Developed a Dockerfile to containerize the microservice.
+   - Built and pushed the Docker image to Docker Hub.
+
+3. **Kubernetes Deployment**:
+   - Created an AKS cluster using Azure CLI.
+   - Wrote and deployed a Kubernetes deployment YAML file to expose the microservice.
+
+4. **CI/CD Pipeline**:
+   - Configured a GitHub Actions workflow for automated building, testing, and deployment.
+
+5. **Documentation**:
+   - Wrote comprehensive documentation in this README file.
+
+---
+
+## Technical Issues Encountered
+
+1. **Issue**: Environment variables were not loading correctly in the containerized environment.
+   - **Resolution**: Updated the Dockerfile to include environment variable configurations.
+
+2. **Issue**: Kubernetes service not exposing the LoadBalancer.
+   - **Resolution**: Ensured correct `type: LoadBalancer` was specified in the service YAML file and verified Azure resource configurations.
+
+3. **Issue**: GitHub Actions workflow failing during Docker push step.
+   - **Resolution**: Added Docker Hub credentials as secrets in the repository and configured the workflow accordingly.
+
+---
+
+## Deployment
+
+- **Docker Image**: The Docker image is available at [Docker Hub](https://hub.docker.com/repository/docker/your-dockerhub-username/staff-service).
+- **Kubernetes Cluster**: The microservice is deployed on an AKS cluster and exposed via a LoadBalancer.
+
+---
+
+## Getting Started
+
+### Local Development
+
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/your-username/bestbuy-staff-service.git
    cd bestbuy-staff-service
    ```
+2. Run the microservice:
+   - Python: `python app.py`
+   - Node.js: `node app.js`
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Docker
 
-3. Run the application locally:
-   ```bash
-   python app.py
-   ```
-
-4. Access the API at:
-   ```
-http://127.0.0.1:5000
-   ```
-
-## Docker Setup
 1. Build the Docker image:
    ```bash
-   docker build -t devgiri616/bestbuy-staff-service:latest .
+   docker build -t staff-service:latest .
    ```
-
-2. Run the Docker container:
+2. Run the container:
    ```bash
-   docker run -p 5000:5000 devgiri616/bestbuy-staff-service:latest
+   docker run -p 5000:5000 staff-service:latest
    ```
 
-3. Access the API at:
-   ```
-   http://127.0.0.1:5000
-   ```
+### Kubernetes
 
-## Kubernetes Deployment
-1. Deploy to AKS:
+1. Apply the deployment file:
    ```bash
-   az aks get-credentials --resource-group <resource-group> --name bestbuy-aks-cluster
    kubectl apply -f staff-service-deployment.yaml
-   ```
-
-2. Verify the deployment:
-   ```bash
-   kubectl get pods
-   ```
-
-3. Access the service using the external IP provided by the Kubernetes LoadBalancer.
-
-## CI/CD Pipeline
-The CI/CD pipeline automates building, testing, and deploying the microservice:
-- **Build:** Docker image is built using GitHub Actions.
-- **Push:** Image is pushed to Docker Hub.
-- **Deploy:** Kubernetes deployment is applied to AKS.
-
-### Workflow File
-See `.github/workflows/ci_cd.yaml` for pipeline details.
-
-## Docker Hub Image
-The Docker image is available at:
-- [devgiri616/bestbuy-staff-service:latest](https://hub.docker.com/r/devgiri616/bestbuy-staff-service)
-
-## Technical Challenges
-- **Missing `requirements.txt`:** Resolved by verifying file existence and adjusting Dockerfile.
-- **Docker Build Context:** Ensured all necessary files were included in the build context.
-- **Deployment Errors:** Addressed Kubernetes YAML misconfigurations and secrets management.
-
-## Future Improvements
-- Add database integration for persistent storage.
-- Implement authentication and authorization for API endpoints.
-- Enhance logging and monitoring for production use.
-
-
-
+   
